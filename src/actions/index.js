@@ -1,6 +1,4 @@
-import ReduxThunk from 'redux-thunk'
 import * as firebase from 'firebase'
-import { LoginManager, AccessToken, GraphRequest, GraphRequestManager} from 'react-native-fbsdk'
 
 const config = {
   apiKey: 'AIzaSyB-sM8hOLtH9NzbNLjt5MzdFTQ6jGPYYEE',
@@ -9,4 +7,4 @@ const config = {
   storageBucket: 'ichigo-f330d.appspot.com',
   messagingSenderId: '44348448997'
 }
-const firebaseApp = firebase.initializeApp(config)
+firebase.initializeApp(config)

@@ -30,10 +30,11 @@ export default class SideMenuDrawer extends Component {
             onOpen={()=>Actions.refresh({key:state.key, open: true})}
             onClose={()=>Actions.refresh({key:state.key, open: false})}
             type="overlay"
+            elevation={50}
             content={<SideMenu />}
-            openDrawerOffset={0.6}
-            panOpenMask={0.1}
-            panCloseMask={0.8}
+            openDrawerOffset={0.4}
+            panOpenMask={0.18}
+            panCloseMask={0.5}
             negotiatePan={true}
             tweenHandler={(ratio) => ({
              main: { opacity:Math.max(0.54,1-ratio) }

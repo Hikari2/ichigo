@@ -9,7 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import {getMyPosts} from '../actions/post'
+import {getMyPosts} from '../actions/posts'
 
 class EditPostView extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   console.log(JSON.stringify(state, null, 2))
   return {
-    myPosts: state.post.myPosts
+    myPosts: state.posts.myPosts
   }
 }
 

@@ -1,6 +1,6 @@
-import ReduxThunk from 'redux-thunk'
 import * as firebase from 'firebase'
-import { LoginManager, AccessToken, GraphRequest, GraphRequestManager} from 'react-native-fbsdk'
+import { LoginManager, AccessToken } from 'react-native-fbsdk'
+import { Alert } from 'react-native'
 
 export const USER_AUTHENTICATED = 'USER_AUTHENTICATED'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -11,64 +11,53 @@ const auth = firebase.auth()
 const provider = firebase.auth.FacebookAuthProvider
 
 export function loginFaceBook() {
-  return function(dispatch, getState) {
-    LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
+  return function(dispatch) {
+    LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']).then(
       loginResult => {
         if (loginResult.isCancelled) {
-          console.log('user canceled')
+          console.log('user canceled!')
           dispatch(loginFailure('user canceled'))
         } else {
           AccessToken.getCurrentAccessToken()
           .then(accessTokenData => {
               const credential = provider.credential(accessTokenData.accessToken)
-              console.log(accessTokenData)
               return auth.signInWithCredential(credential)
           })
           .then(credData => {
-            console.log(credData)
             dispatch(loginSuccess(credData))
           })
-          .catch(err => {
-              console.log(err)
-              dispatch(loginFailure(err))
+          .catch(error => {
+              console.log(error)
+              Alert.alert(err.toString)
+              dispatch(loginFailure(error))
           })
         }
     },
     error => {
       console.log(error)
-      dispatch(loginFailure(error.toString()))
+      Alert.alert('Login failed', 'Sorry unable to login. Plese check your connection')
     })
   }
 }
 
 export function logout() {
-  return function(dispatch, getState) {
+  return function(dispatch) {
     auth.signOut().then(() => {
-        console.log('Logged out!')
         LoginManager.logOut()
         dispatch(logoutSuccess())
     }, () => {
-      console.log('Something went wrong')
+      Alert.alert('Logout failed', 'Sorry unable to logout. Plese check your connection')
     })
   }
 }
 
 export function checkLogin() {
-  return function(dispatch, getState) {
-    firebase.auth().onAuthStateChanged(function(user) {
+  return function(dispatch) {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        dispatch(userAuthenticated(user))
-      } else {
-        console.log('No user!!!!')
+        dispatch(loginSuccess(user))
       }
     })
-  }
-}
-
-export function userAuthenticated(user) {
-  return {
-    type: USER_AUTHENTICATED,
-    user
   }
 }
 

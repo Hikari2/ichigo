@@ -3,11 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
+  ScrollView
 } from 'react-native'
 import { connect } from 'react-redux'
-import Drawer from 'react-native-drawer'
-import { DefaultRenderer, Actions } from 'react-native-router-flux'
+import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { logout } from '../actions/auth'
 
@@ -16,56 +16,74 @@ class SideMenu extends Component {
     super(props)
   }
 
-  componentDidMount() {
-
-  }
-
   render() {
     const drawer = this.context.drawer
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <Image source={{uri: this.props.profilePic}} style={styles.profilePic} />
+          <View style={styles.pictureWrapper}>
+            <Image source={{uri: this.props.profilePic}} style={styles.profilePic} />
+          </View>
           <Text style={styles.displayName}>{this.props.displayName}</Text>
         </View>
         <View style={styles.optionsContainer}>
-        <Icon.Button
-          name='home'
-          backgroundColor='#42647F'
-          onPress={() => { drawer.close(); Actions.home(); }}>
-          <Text size={16} style={styles.optionText} >
-            Home
-          </Text>
-        </Icon.Button>
-        <Icon.Button
-          name='group'
-          backgroundColor='#42647F'
-          onPress={() => { drawer.close(); Actions.groups(); }}>
-          <Text size={16} style={styles.optionText} >
-            Groups
-          </Text>
-        </Icon.Button>
-        <Icon.Button
-          name='plus'
-          backgroundColor='#42647F'
-          onPress={() => { drawer.close(); Actions.newPost(); }}>
-          <Text size={16} style={styles.optionText} >
-            New recipe
-          </Text>
-        </Icon.Button>
-          <Icon.Button
-            name='close'
-            backgroundColor='#42647F'
-            onPress={this.props.onLogoutClick}>
-            <Text size={16} style={styles.optionText} >
-              Logout
-            </Text>
-          </Icon.Button>
+          <ScrollView>
+            <Icon.Button
+              name='home'
+              backgroundColor='transparent'
+              underlayColor='#B6B6B4'
+              style={styles.optionButton}
+              iconStyle={styles.optionIcon}
+              onPress={() => { drawer.close(); Actions.home(); }}>
+              <Text size={16} style={styles.optionText}>
+                Home
+              </Text>
+            </Icon.Button>
+            <Icon.Button
+              name='group'
+              backgroundColor='transparent'
+              underlayColor='#B6B6B4'
+              style={styles.optionButton}
+              iconStyle={styles.optionIcon}
+              onPress={() => { drawer.close(); Actions.listGroup(); }}>
+              <Text size={16} style={styles.optionText}>
+                My groups
+              </Text>
+            </Icon.Button>
+            <Icon.Button
+              name='plus'
+              backgroundColor='transparent'
+              underlayColor='#B6B6B4'
+              style={styles.optionButton}
+              iconStyle={styles.optionIcon}
+              onPress={() => { drawer.close(); Actions.newPost(); }}>
+              <Text size={16} style={styles.optionText}>
+                New recipe
+              </Text>
+            </Icon.Button>
+            <Icon.Button
+              name='close'
+              backgroundColor='transparent'
+              underlayColor='#B6B6B4'
+              style={styles.optionButton}
+              iconStyle={styles.optionIcon}
+              onPress={() => { drawer.close(); this.props.onLogoutClick(); }}>
+              <Text size={16} style={styles.optionText} >
+                Logout
+              </Text>
+            </Icon.Button>
+          </ScrollView>
         </View>
       </View>
     )
   }
 
+}
+
+SideMenu.propTypes = {
+  onLogoutClick: React.PropTypes.func,
+  displayName: React.PropTypes.string,
+  profilePic: React.PropTypes.string
 }
 
 SideMenu.contextTypes = {
@@ -75,48 +93,60 @@ SideMenu.contextTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#42647F',
-    borderRightWidth: 0.5,
-    borderColor: '#d6d7da'
+    borderRightWidth: 1,
+    borderColor: '#2C3539',
+    backgroundColor: '#FFFFFF'
   },
   profileContainer: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
-    marginBottom: 20
+    backgroundColor: '#2B3856',
+  },
+  pictureWrapper: {
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    padding: 10
   },
   profilePic: {
-    marginBottom: 20,
-    height: 120,
-    width: 120
+    height: 100,
+    width: 100
   },
   displayName: {
+    marginTop: 10,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     color: '#FFFFFF'
   },
   optionsContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 30,
-    marginBottom: 20
+    flex: 2,
+    justifyContent: 'center',
+  },
+  optionButton: {
+    borderWidth: 0.1,
+    borderRadius: 1,
+    padding: 20,
+    borderColor: '#2C3539'
+  },
+  optionIcon: {
+    color: '#2B3856'
   },
   optionText: {
-    color: '#FFFFFF',
+    color: '#2B3856',
     fontSize: 16,
     fontFamily: 'Helvetica'
   }
 })
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
-    displayName: state.auth.isAuthenticated ? state.auth.user.displayName : ' ',
-    profilePic: state.auth.isAuthenticated ? state.auth.user.photoURL : 'http://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+    isAuthenticated: state.auth.isAuthenticated,
+    displayName: state.auth.isAuthenticated ? state.auth.displayName : 'No name found',
+    profilePic: state.auth.isAuthenticated ? state.auth.photoURL : ' '
   }
 }
 
@@ -124,9 +154,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLogoutClick: () => {
       dispatch(logout())
-    },
-    onPublishClick: (post) => {
-      dispatch(publishPost(post))
     }
   }
 }

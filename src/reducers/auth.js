@@ -10,13 +10,17 @@ const auth = (
     isAuthenticated: false,
     errorMessage: ''
   }, action) => {
+  //console.log(JSON.stringify(state.user, null, 2))
   switch (action.type) {
-    case 'USER_AUTHENTICATED':
     case 'LOGIN_SUCCESS': {
       return Object.assign({}, state, {
         isAuthenticated: true,
         errorMessage: '',
-        user: action.user
+        uid: action.user.uid,
+        displayName: action.user.displayName,
+        email: action.user.email,
+        photoURL: action.user.photoURL,
+        providerData: action.user.providerData
       })
     }
     case 'LOGIN_FAILURE': {

@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux'
+import user from './user'
 import auth from './auth'
-import post from './post'
+import posts from './posts'
 
 const rootReducer = combineReducers({
+  user,
   auth,
-  post
+  posts
 })
 
 export default rootReducer

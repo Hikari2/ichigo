@@ -1,26 +1,20 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  Text,
   View,
-  ScrollView
+  Text
 } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
-import ScrollableTabView, {ScrollableTabBar}  from 'react-native-scrollable-tab-view'
-import GroupPage from './GroupPage'
-import HomeNavBar from '../components/HomeNavBar'
-import NewPostView from '../containers/NewPostView'
-import EditPostView from '../containers/EditPostView'
-import BrowsePostView from '../containers/BrowsePostView'
 
 class Home extends Component {
+  constructor(props) {
+    super(props)
+  }
 
   render() {
     return (
       <View style={styles.container}>
-
+        <Text>HOME!</Text>
       </View>
     )
   }
@@ -31,7 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF'
   }
 })
 
@@ -43,9 +37,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSubmitPostForm: (post) => {
-      dispatch(publishPost(post))
-    }
+
   }
 }
 

@@ -8,7 +8,7 @@ import {
   ALL_POSTS_FOUND
 } from '../actions'
 
-const post = (
+const posts = (
   state = {
     isSearching: false,
     myPosts: [],
@@ -32,4 +32,4 @@ const post = (
   }
 }
 
-export default post
+export default posts

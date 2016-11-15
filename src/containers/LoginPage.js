@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  Text,
   View,
-  TouchableHighlight
+  Text
 } from 'react-native'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { LoginManager, AccessToken, LoginButton} from 'react-native-fbsdk'
 import { loginFaceBook, checkLogin } from '../actions/auth'
-import { logout } from '../actions/auth'
 
 class LoginPage extends Component {
   constructor(props) {
@@ -18,21 +14,40 @@ class LoginPage extends Component {
   }
 
   componentDidMount() {
-    this.props.onLoad()
+    this.updateIntervalID = setInterval(() => this.props.onLoad(), 5000)
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Icon.Button name="facebook" backgroundColor="#3b5998" onPress={this.props.faceBookLogin}>
+        <Icon.Button
+          name="facebook"
+          borderRadius={0}
+          backgroundColor="#3b5998"
+          onPress={this.props.faceBookLogin}>
           Login with Facebook
         </Icon.Button>
       </View>
     )
   }
+
+  componentWillUnmount () {
+    clearInterval(this.updateIntervalID)
+  }
+}
+
+LoginPage.propTypes = {
+  faceBookLogin: React.PropTypes.func,
+  onLoad: React.PropTypes.func
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
   button: {
     padding:10,
     height:45,
@@ -43,16 +58,10 @@ const styles = StyleSheet.create({
   button_text: {
     fontSize: 20,
     color: 'white'
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   }
 })
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated
   }
@@ -62,7 +71,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLoad: () => {
       dispatch(checkLogin())
-      //dispatch(logout())
     },
     faceBookLogin: () => {
       dispatch(loginFaceBook())

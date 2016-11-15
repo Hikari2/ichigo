@@ -14,7 +14,7 @@ import { DefaultRenderer, Actions } from 'react-native-router-flux'
 import Camera from 'react-native-camera'
 import SideMenu from '../containers/SideMenu'
 import FormGen, {} from 'tcomb-form-native'
-import {publishPost} from '../actions/post'
+import {publishPost} from '../actions/posts'
 
 class NewPostView extends Component {
   constructor(props) {
@@ -86,6 +86,7 @@ const Post = FormGen.struct({
 })
 const stylesheet = JSON.parse(JSON.stringify(FormGen.form.Form.stylesheet))
 stylesheet.textbox.normal.height = 100
+FormGen.form.Form.stylesheet = stylesheet
 
 const options = {
   fields: {
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user: state.auth.isAuthenticated ? state.auth.user.providerData[0] : {}
+    user: state.auth.isAuthenticated ? state.auth.providerData[0] : {}
   }
 }
 
