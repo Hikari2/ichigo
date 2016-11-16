@@ -4,12 +4,14 @@ import {
   View,
   ScrollView,
   TouchableHighlight,
-  Text
+  Text,
+  Image
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { connect } from 'react-redux'
 import FormGen, {} from 'tcomb-form-native'
 import {createGroup} from '../actions/groups'
+import { Actions } from 'react-native-router-flux'
 import {getFriendList} from '../actions/user'
 
 class CreateGroupPage extends Component {
@@ -17,8 +19,9 @@ class CreateGroupPage extends Component {
     super(props)
     const list = props.friends.map((data)=>{
       return ({
-        id: data.id,
-        name: data.name,
+        uid: data.uid,
+        name: data.displayName,
+        photo: data.photoURL,
         marked: false
       })
     })
@@ -45,10 +48,12 @@ class CreateGroupPage extends Component {
             onPress={() => {
               const value = this.refs.form.getValue()
               if (value) {
+                JSON.stringify(this.state.list, null, 2)
                 this.props.onSubmit({
                   list: this.state.list,
                   title: value.title
                 })
+                Actions.listGroup()
               }
             }}>
             <Text size={16} style={styles.optionText} >
@@ -62,21 +67,25 @@ class CreateGroupPage extends Component {
             value={this.state.value}
             onChange={(value) => this.setState({value})}
           />
-          <View style={styles.ListContainer}>
-          {
-            this.state.list.map((data, i) => {
-              return (
+        </View>
+        <View style={styles.listContainer}>
+        {
+          this.state.list.map((user, i) => {
+            return (
+              <View style={styles.listRow} key={`item-${i}`}>
                 <TouchableHighlight
                   underlayColor='#C0C0C0'
-                  style={data.marked ? styles.markedItem : styles.unmarkedItem}
-                  onPress={() => this.mark(i)}
-                  key={`item-${i}`}>
-                  <Text>{data.name}</Text>
+                  style={user.marked ? styles.markedItem : styles.unmarkedItem}
+                  onPress={() => this.mark(i)}>
+                  <View style={styles.listRow}>
+                    <Image source={{uri: user.photo}} style={styles.profilePic} />
+                    <Text>{user.name}</Text>
+                  </View>
                 </TouchableHighlight>
-              )
-            })
-          }
-          </View>
+              </View>
+            )
+          })
+        }
         </View>
       </ScrollView>
     )
@@ -102,6 +111,7 @@ stylesheet.textbox.normal.borderRadius = 0
 stylesheet.textbox.normal.borderWidth = 0
 stylesheet.textbox.normal.borderColor= '#36648B'
 stylesheet.textbox.normal.borderBottomWidth = 1
+stylesheet.textbox.normal.width = 250
 
 const Group = FormGen.struct({
   title: FormGen.String
@@ -121,39 +131,51 @@ const options = {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    padding: 40,
+    alignItems: 'center',
     marginTop: 80,
-    backgroundColor: '#ffffff',
-  },
-  ListContainer: {
-    justifyContent: 'center',
     backgroundColor: '#ffffff'
   },
+  listContainer: {
+    alignItems: 'center',
+    backgroundColor: '#ffffff'
+  },
+  listRow: {
+    width: 250,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 5,
+    marginTop: 2
+  },
+  profilePic: {
+    marginRight: 10,
+    height: 50,
+    width: 50
+  },
   unmarkedItem: {
-    padding: 20,
-    marginTop: 5,
-    borderWidth: 1,
-    borderColor: '#2C3539',
+    padding: 2,
+    paddingBottom: 1,
+    borderBottomWidth: 1,
+    borderColor: '#36648B',
     backgroundColor: '#ffffff'
   },
   markedItem: {
-    padding: 20,
-    marginTop: 5,
     borderWidth: 2,
     borderColor: '#3299CC',
     backgroundColor: '#ffffff'
   },
   optionButton: {
+    width: 250,
     borderWidth: 0.1,
     borderRadius: 1,
     padding: 20,
-    backgroundColor: '#3299CC'
+    backgroundColor: '#00BFFF'
   },
   optionIcon: {
-    color: '#2B3856'
+    color: '#FFFFFF'
   },
   optionText: {
-    color: '#2B3856',
+    color: '#FFFFFF',
     fontSize: 16,
     fontFamily: 'Helvetica'
   }

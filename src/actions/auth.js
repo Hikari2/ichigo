@@ -15,7 +15,7 @@ export function loginFaceBook() {
     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']).then(
       loginResult => {
         if (loginResult.isCancelled) {
-          console.log('user canceled!')
+          Alert.alert('user canceled')
           dispatch(loginFailure('user canceled'))
         } else {
           AccessToken.getCurrentAccessToken()
@@ -24,20 +24,32 @@ export function loginFaceBook() {
               return auth.signInWithCredential(credential)
           })
           .then(credData => {
+            storeUser(credData, 'facebook')
             dispatch(loginSuccess(credData))
-          })
-          .catch(error => {
-              console.log(error)
-              Alert.alert(err.toString)
-              dispatch(loginFailure(error))
           })
         }
     },
     error => {
-      console.log(error)
-      Alert.alert('Login failed', 'Sorry unable to login. Plese check your connection')
+      console.log(error.toString())
+      Alert.alert('Something went wrong while trying to login2')
     })
   }
+}
+
+function storeUser(user, provider) {
+  const userList = firebase.database().ref('user_list/'+ provider + '/' + user.providerData[0].uid)
+  const userData = {
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL,
+    uid: user.uid
+  }
+  userList.set(userData)
+  .then(() => {
+  }, error => {
+    console.log(error.toString())
+    Alert.alert('Something went wrong while trying to store user data')
+  })
 }
 
 export function logout() {

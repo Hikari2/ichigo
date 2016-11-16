@@ -4,32 +4,51 @@ import { Alert } from 'react-native'
 export const CREATE_GROUP_REQUEST = 'CREATE_GROUP_REQUEST'
 export const CREATE_GROUP_SUCCESS = 'CREATE_GROUP_SUCCESS'
 export const CREATE_GROUP_FAILURE = 'CREATE_GROUP_FAILURE'
-export const SEARCH_REQUEST = 'SEARCH_REQUEST'
-export const SEARCH_SUCCESS = 'SEARCH_SUCCESS'
-export const SEARCH_FAILURE = 'SEARCH_FAILURE'
-export const ALL_POSTS_FOUND = 'ALL_POSTS_FOUND'
 
-const groupList = firebase.database().ref('group_list')
+export const FIND_GROUPS_REQUEST = 'FIND_GROUPS_REQUEST'
+export const FIND_GROUPS_SUCCESS = 'FIND_GROUPS_SUCCESS'
+export const FIND_GROUPS_FAILURE = 'FIND_GROUPS_FAILURE'
 
 export function createGroup(data) {
   return function(dispatch, getState) {
     dispatch(createGroupRequest())
     const group = formatGroup(data, getState().auth.uid)
-    groupList.push(group)
-    .then(() => {
-      dispatch(createGroupSuccess())
+    firebase.database().ref('group_list').push(group)
+    .then((result) => {
+      const promises = group.members.map(user => {
+        firebase.database().ref('user_list/joined_groups/' + user).once('value').then(
+          snapshot => {
+            const list = snapshot.val()
+            if(list == null) {
+              return firebase.database().ref('user_list/joined_groups/' + user).set([result.key])
+            }
+            else if(!list.includes(result.key)) {
+              list.push(result.key)
+            }
+            return firebase.database().ref('user_list/joined_groups/' + user).set(list)
+          }
+        )
+      })
+      Promise.all(promises).then(result => {
+        dispatch(createGroupSuccess())
+      }, error => {
+        Alert.alert('Something went wrong while trying to create the group 1')
+      })
     }, error => {
       dispatch(createGroupFailure(error))
-      Alert.alert('Something went wrong when trying to create the group')
+      Alert.alert('Something went wrong while trying to create the group 2')
     })
   }
 }
 
 function formatGroup(data, uid) {
-  const members = data.list.filter((item) => {
-    return item.marked
+  let members = data.list.filter((user) => {
+    return user.marked
   })
-
+  members = members.map((user) => {
+    return user.uid
+  })
+  members.push(uid)
   return ({
     'title': data.title,
     'owner': uid,
@@ -55,51 +74,54 @@ export function createGroupFailure(message) {
     error: message
   }
 }
-//    console.log(JSON.stringify(group, null, 2))
+
 export function getMyGroups() {
   return function(dispatch, getState) {
-    dispatch(searchPosts())
+    dispatch(findGroupsRequest())
     const uid = getState().auth.uid
-    const groupList = firebase.database().ref('group_list').orderByChild('owner').equalTo(uid)
-    groupList.on('value', (snap) => {
-      var items = []
-      snap.forEach((child) => {
-        items.push(Object.assign({}, child.val(), {_key: child.key}))
-      })
-      dispatch(foundPosts(items))
-    }, error => {
-      dispatch(searchFailure(error))
-    })
+    firebase.database().ref('user_list/joined_groups/' + uid).on('value',
+      snapshot => {
+        if(snapshot.val() == null)
+          return
+        const promises = snapshot.val().map(groupId => {
+          return getGroup(groupId)
+        })
+        Promise.all(promises).then(result => {
+          dispatch(findGroupsSuccess(result))
+        }, error => {
+          dispatch(findGroupsFailure(error))
+          console.log('Error while fetching user groups: ' + JSON.stringify(error, null, 2))
+          Alert.alert('Error while fetching user groups')
+        })
+      }
+    )
   }
 }
 
-export function searchPosts() {
+function getGroup(id) {
+  return (
+    firebase.database().ref('group_list/' + id).once('value').
+      then(snapshot => snapshot.val())
+  )
+}
+
+export function findGroupsRequest() {
   return {
-    type: SEARCH_REQUEST,
+    type: FIND_GROUPS_REQUEST,
     isPublishing: true
   }
 }
 
-export function foundPosts(posts) {
+export function findGroupsSuccess(groups) {
   return {
-    type: SEARCH_SUCCESS,
-    posts,
-    isPublishing: false
+    type: FIND_GROUPS_SUCCESS,
+    groups
   }
 }
 
-export function foundAllPosts(posts) {
+export function findGroupsFailure(message) {
   return {
-    type: ALL_POSTS_FOUND,
-    posts,
-    isPublishing: false
-  }
-}
-
-export function searchFailure(message) {
-  return {
-    type: SEARCH_FAILURE,
-    isPublishing: false,
+    type: FIND_GROUPS_FAILURE,
     error: message
   }
 }

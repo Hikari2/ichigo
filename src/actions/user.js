@@ -13,15 +13,29 @@ export function getFriendList() {
       null,
       (error, result) => {
         if (error) {
-          Alert.alert('Error fetching data: ' + JSON.stringify(error, null, 2))
+          console.log('Error while fetching friend list: ' + JSON.stringify(error, null, 2))
+          Alert.alert('Error while fetching friend list')
         } else {
-          dispatch(loadFriendsSuccess(result.data))
+          const promises = result.data.map(data => {
+            return getUser(data.id, 'facebook')
+          })
+          Promise.all(promises).then(result => {
+            dispatch(loadFriendsSuccess(result))
+          }, error => {
+            console.log('Error while fetching friend list user data: ' + JSON.stringify(error, null, 2))
+            Alert.alert('Error while fetching friend list user data')
+          })
         }
       }
     )
     dispatch(loadFriendsRequest())
     new GraphRequestManager().addRequest(infoRequest).start()
   }
+}
+
+function getUser(providerUid, provider) {
+  const userList = firebase.database().ref('user_list/' + provider + '/' + providerUid)
+  return userList.once('value').then(snapshot => snapshot.val())
 }
 
 export function loadFriendsRequest() {

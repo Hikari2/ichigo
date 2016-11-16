@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    groupList: state.posts.myPosts
+    groupList: state.groups.myGroups
   }
 }
 

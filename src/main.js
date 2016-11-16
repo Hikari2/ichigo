@@ -37,31 +37,31 @@ export default class ichigo extends Component {
           <Scene key='drawer' component={SideMenuDrawer} open={false} initial>
             <Scene key='main' navBar={NavigationBar}>
             <Scene
+              key='listGroup'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={GroupListPage}
+            />
+            <Scene
               key='createGroup'
               navigationBarStyle={{ backgroundColor: '#ffffff' }}
               titleStyle={{ color: '#000000' }}
               component={CreateGroupPage}
             />
-              <Scene
-                key='listGroup'
-                navigationBarStyle={{ backgroundColor: '#ffffff' }}
-                titleStyle={{ color: '#000000' }}
-                component={GroupListPage}
-              />
-              <Scene
-                key='home'
-                title='Home'
-                navigationBarStyle={{ backgroundColor: '#ffffff' }}
-                titleStyle={{ color: '#000000' }}
-                component={Home}
-              />
-              <Scene
-                key='newPost'
-                title='New recipe'
-                navigationBarStyle={{ backgroundColor: '#ffffff' }}
-                titleStyle={{ color: '#000000' }}
-                component={NewPostView}
-              />
+            <Scene
+              key='home'
+              title='Home'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={Home}
+            />
+            <Scene
+              key='newPost'
+              title='New recipe'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={NewPostView}
+            />
             </Scene>
           </Scene>
         </Scene>

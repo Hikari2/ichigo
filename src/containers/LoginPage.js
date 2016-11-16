@@ -14,7 +14,7 @@ class LoginPage extends Component {
   }
 
   componentDidMount() {
-    this.updateIntervalID = setInterval(() => this.props.onLoad(), 5000)
+    this.updateIntervalID = setInterval(() => this.props.onLoad(), 10000)
   }
 
   render() {

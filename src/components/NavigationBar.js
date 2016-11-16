@@ -27,10 +27,6 @@ export default class NavigationBar extends Component {
               Actions.refresh({key: 'drawer', open: value => !value })
             }}
           />
-          <Image
-            style={styles.logoImage}
-            source={require('../assets/logo.png')}
-          />
         </View>
         <View style={styles.rightContainer}>
         </View>
