@@ -56,7 +56,7 @@ class SideMenu extends Component {
               underlayColor='#B6B6B4'
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
-              onPress={() => { drawer.close(); Actions.newPost(); }}>
+              onPress={() => { drawer.close(); Actions.newRecipe(); }}>
               <Text size={16} style={styles.optionText}>
                 New recipe
               </Text>
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   profilePic: {
-    height: 100,
-    width: 100
+    height: 80,
+    width: 80
   },
   displayName: {
     marginTop: 10,

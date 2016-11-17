@@ -10,7 +10,7 @@ import GroupPage from './containers/GroupPage'
 import GroupListPage from './containers/GroupListPage'
 import CreateGroupPage from './containers/CreateGroupPage'
 import SideMenuDrawer from './components/SideMenuDrawer'
-import NewPostView from './containers/NewPostView'
+import NewRecipePage from './containers/NewRecipePage'
 import NavigationBar from './components/NavigationBar'
 
 let store = createStore(
@@ -56,11 +56,11 @@ export default class ichigo extends Component {
               component={Home}
             />
             <Scene
-              key='newPost'
+              key='newRecipe'
               title='New recipe'
               navigationBarStyle={{ backgroundColor: '#ffffff' }}
               titleStyle={{ color: '#000000' }}
-              component={NewPostView}
+              component={NewRecipePage}
             />
             </Scene>
           </Scene>

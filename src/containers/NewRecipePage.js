@@ -14,17 +14,15 @@ import { DefaultRenderer, Actions } from 'react-native-router-flux'
 import Camera from 'react-native-camera'
 import SideMenu from '../containers/SideMenu'
 import FormGen, {} from 'tcomb-form-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
 import {publishPost} from '../actions/posts'
 
-class NewPostView extends Component {
+class NewRecipePage extends Component {
   constructor(props) {
     super(props)
     const user = props.user
     this.state = {
-      value: {
-        name: user.displayName,
-        email: user.email
-      }
+      value: {}
     }
   }
 
@@ -39,6 +37,17 @@ class NewPostView extends Component {
             value={this.state.value}
             onChange={(value)=> this.setState({value})}
           />
+          <Icon.Button
+            name='plus'
+            underlayColor='#757575'
+            backgroundColor='transparent'
+            color='#000000'
+            style={styles.optionButton}
+            onPress={() => { }}>
+              <Text size={16} style={styles.optionText} >
+                {'Add new step'}
+              </Text>
+          </Icon.Button>
           <Camera
             ref={(cam) => {
               this.camera = cam;
@@ -53,8 +62,6 @@ class NewPostView extends Component {
               const val = this.refs.form.getValue()
               if(val) {
                 this.props.onSubmit({
-                  name: val.name,
-                  email: val.email,
                   title: val.title,
                   description: val.description,
                   picture: this.state.pic
@@ -79,8 +86,6 @@ class NewPostView extends Component {
 const Form = FormGen.form.Form
 const Email = FormGen.refinement(FormGen.Number, function (n) { return n >= 18; })
 const Post = FormGen.struct({
-  name: FormGen.String,
-  email: FormGen.String,
   title: FormGen.String,
   description: FormGen.String
 })
@@ -90,21 +95,13 @@ FormGen.form.Form.stylesheet = stylesheet
 
 const options = {
   fields: {
-    name: {
-      underlineColorAndroid: 'transparent'
-    },
-    email: {
-      error: 'Insert a valid email',
-      underlineColorAndroid: 'transparent'
-    },
     title: {
-      help: 'Insert a titile',
       underlineColorAndroid: 'transparent'
     },
     description: {
-      help: 'Insert a description',
+      help: 'Give a short description',
       underlineColorAndroid: 'transparent',
-      numberOfLines: 5,
+      numberOfLines: 4,
       multiline: true,
       stylesheet
     }
@@ -115,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     padding: 40,
-    marginTop: 15,
+    marginTop: 30,
     backgroundColor: '#ffffff',
   },
   title: {
@@ -155,6 +152,16 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 12,
     alignSelf: 'center'
+  },
+  optionButton: {
+    borderWidth: 0.1,
+    borderRadius: 1,
+    backgroundColor: '#FFFFFF'
+  },
+  optionText: {
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Helvetica'
   }
 })
 
@@ -175,4 +182,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NewPostView)
+)(NewRecipePage)
