@@ -12,6 +12,7 @@ import CreateGroupPage from './containers/CreateGroupPage'
 import SideMenuDrawer from './components/SideMenuDrawer'
 import NewRecipePage from './containers/NewRecipePage'
 import NavigationBar from './components/NavigationBar'
+import ViewRecipePage from './containers/ViewRecipePage'
 
 let store = createStore(
   reducer,
@@ -37,18 +38,6 @@ export default class ichigo extends Component {
           <Scene key='drawer' component={SideMenuDrawer} open={false} initial>
             <Scene key='main' navBar={NavigationBar}>
             <Scene
-              key='listGroup'
-              navigationBarStyle={{ backgroundColor: '#ffffff' }}
-              titleStyle={{ color: '#000000' }}
-              component={GroupListPage}
-            />
-            <Scene
-              key='createGroup'
-              navigationBarStyle={{ backgroundColor: '#ffffff' }}
-              titleStyle={{ color: '#000000' }}
-              component={CreateGroupPage}
-            />
-            <Scene
               key='home'
               title='Home'
               navigationBarStyle={{ backgroundColor: '#ffffff' }}
@@ -61,6 +50,25 @@ export default class ichigo extends Component {
               navigationBarStyle={{ backgroundColor: '#ffffff' }}
               titleStyle={{ color: '#000000' }}
               component={NewRecipePage}
+            />
+            <Scene
+              key='viewRecipe'
+              title='View recipe'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={ViewRecipePage}
+            />
+            <Scene
+              key='listGroup'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={GroupListPage}
+            />
+            <Scene
+              key='createGroup'
+              navigationBarStyle={{ backgroundColor: '#ffffff' }}
+              titleStyle={{ color: '#000000' }}
+              component={CreateGroupPage}
             />
             </Scene>
           </Scene>

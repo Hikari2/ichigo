@@ -25,6 +25,7 @@ class SideMenu extends Component {
             <Image source={{uri: this.props.profilePic}} style={styles.profilePic} />
           </View>
           <Text style={styles.displayName}>{this.props.displayName}</Text>
+          <Text style={styles.email}>{this.props.email}</Text>
         </View>
         <View style={styles.optionsContainer}>
           <ScrollView>
@@ -32,6 +33,7 @@ class SideMenu extends Component {
               name='home'
               backgroundColor='transparent'
               underlayColor='#B6B6B4'
+              borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
               onPress={() => { drawer.close(); Actions.home(); }}>
@@ -43,6 +45,7 @@ class SideMenu extends Component {
               name='group'
               backgroundColor='transparent'
               underlayColor='#B6B6B4'
+              borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
               onPress={() => { drawer.close(); Actions.listGroup(); }}>
@@ -54,6 +57,7 @@ class SideMenu extends Component {
               name='plus'
               backgroundColor='transparent'
               underlayColor='#B6B6B4'
+              borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
               onPress={() => { drawer.close(); Actions.newRecipe(); }}>
@@ -65,6 +69,7 @@ class SideMenu extends Component {
               name='close'
               backgroundColor='transparent'
               underlayColor='#B6B6B4'
+              borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
               onPress={() => { drawer.close(); this.props.onLogoutClick(); }}>
@@ -83,6 +88,7 @@ class SideMenu extends Component {
 SideMenu.propTypes = {
   onLogoutClick: React.PropTypes.func,
   displayName: React.PropTypes.string,
+  email: React.PropTypes.string,
   profilePic: React.PropTypes.string
 }
 
@@ -99,16 +105,17 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     flex: 1,
+    flexWrap:'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2B3856',
+    backgroundColor: 'rgb(128,128,128)',
   },
   pictureWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(119,212,197)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
-    padding: 10
+    padding: 5,
+    margin: 5
   },
   profilePic: {
     height: 80,
@@ -118,9 +125,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'Helvetica',
-    color: '#FFFFFF'
+    fontWeight: '200',
+    color: 'white'
+  },
+  email: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '200',
+    color: 'white'
   },
   optionsContainer: {
     flex: 2,
@@ -128,7 +141,6 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     borderWidth: 0.1,
-    borderRadius: 1,
     padding: 20,
     borderColor: '#2C3539'
   },
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
     color: '#2B3856'
   },
   optionText: {
-    color: '#2B3856',
+    color: 'rgb(105,105,105)',
     fontSize: 16,
     fontFamily: 'Helvetica'
   }
@@ -146,7 +158,8 @@ const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     displayName: state.auth.isAuthenticated ? state.auth.displayName : 'No name found',
-    profilePic: state.auth.isAuthenticated ? state.auth.photoURL : ' '
+    profilePic: state.auth.isAuthenticated ? state.auth.photoURL : ' ',
+    email: state.auth.isAuthenticated ? state.auth.email : ' '
   }
 }
 

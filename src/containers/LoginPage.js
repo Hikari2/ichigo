@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
-  Text
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -14,16 +14,18 @@ class LoginPage extends Component {
   }
 
   componentDidMount() {
-    this.updateIntervalID = setInterval(() => this.props.onLoad(), 10000)
+    this.props.onLoad()
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Image source={require('../assets/logo.jpg')} style={styles.picture} resizeMode={'contain'}/>
         <Icon.Button
           name="facebook"
           borderRadius={0}
           backgroundColor="#3b5998"
+          style={styles.button}
           onPress={this.props.faceBookLogin}>
           Login with Facebook
         </Icon.Button>
@@ -45,19 +47,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    alignItems: 'center'
+  },
+  title: {
+    marginBottom: 85,
+    fontSize: 45,
+    fontWeight: '300',
+    fontFamily: 'lucida grande'
   },
   button: {
     padding:10,
     height:45,
     overflow:'hidden',
-    borderRadius:4,
-    backgroundColor: 'lightblue'
+    borderRadius:4
   },
   button_text: {
     fontSize: 20,
     color: 'white'
+  },
+  picture: {
+    height: 150,
+    width: 150,
+    marginBottom: 35
   }
 })
 

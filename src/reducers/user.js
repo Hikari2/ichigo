@@ -1,13 +1,13 @@
 
 const user = (
   state = {
-    isRequesting: false,
+    isSearching: false,
     friends: []
   }, action) => {
   switch (action.type) {
     case 'LOAD_FRIENDS_REQUEST': {
       return Object.assign({}, state, {
-        isRequesting: true
+        isSearching: true
       })
     }
     case 'LOAD_FRIENDS_SUCCESS': {

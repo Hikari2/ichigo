@@ -5,7 +5,8 @@ import {
   ScrollView,
   TouchableHighlight,
   Text,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { connect } from 'react-redux'
@@ -17,22 +18,28 @@ import {getFriendList} from '../actions/user'
 class CreateGroupPage extends Component {
   constructor(props) {
     super(props)
-    const list = props.friends.map((data)=>{
-      return ({
-        uid: data.uid,
-        name: data.displayName,
-        photo: data.photoURL,
-        marked: false
-      })
-    })
     this.state = {
-      list,
+      list: [],
       value: {}
     }
   }
 
   componentDidMount() {
     this.props.onLoad()
+  }
+
+  componentDidUpdate() {
+    if(this.state.list.length === 0 && this.props.friends.length !== 0) {
+      const list = this.props.friends.map((data)=>{
+        return ({
+          uid: data.uid,
+          name: data.displayName,
+          photo: data.photoURL,
+          marked: false
+        })
+      })
+      this.setState({list})
+    }
   }
 
   render() {
@@ -68,6 +75,7 @@ class CreateGroupPage extends Component {
             onChange={(value) => this.setState({value})}
           />
         </View>
+        {this.props.loading ? <ActivityIndicator size={'large'} color={'rgb(80, 200, 180)'}/> :
         <View style={styles.listContainer}>
         {
           this.state.list.map((user, i) => {
@@ -87,6 +95,7 @@ class CreateGroupPage extends Component {
           })
         }
         </View>
+      }
       </ScrollView>
     )
   }
@@ -112,6 +121,12 @@ stylesheet.textbox.normal.borderWidth = 0
 stylesheet.textbox.normal.borderColor= '#36648B'
 stylesheet.textbox.normal.borderBottomWidth = 1
 stylesheet.textbox.normal.width = 250
+
+stylesheet.textbox.error.borderRadius = 0
+stylesheet.textbox.error.borderWidth = 0
+stylesheet.textbox.error.borderColor= ''
+stylesheet.textbox.error.borderBottomWidth = 1
+stylesheet.textbox.error.width = 250
 
 const Group = FormGen.struct({
   title: FormGen.String
@@ -183,8 +198,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isSearching: state.user.isSearching,
-    friends: state.user.friends
+    loading: state.user.isSearching,
+    friends: state.user.friends,
+    friendsCount: state.user.friends.length
   }
 }
 

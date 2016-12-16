@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
 import user from './user'
 import auth from './auth'
-import posts from './posts'
+import recipe from './recipe'
 import groups from './groups'
 
 const rootReducer = combineReducers({
   user,
   auth,
-  posts,
+  recipe,
   groups
 })
 
