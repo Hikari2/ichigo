@@ -89,28 +89,27 @@ function updateImage(key, name, path) {
 }
 
 export function publish(recipe) {
-  console.log(recipe)
   return function(dispatch, getState) {
     dispatch(requestPublish())
 
     recipe = {
       uid: getState().auth.uid,
+      profilePic: getState().auth.photoURL,
       author: getState().auth.displayName,
       email: getState().auth.email,
-      date: new Date().toJSON().slice(0,10),
       ...recipe
     }
 
     const key = firebase.database().ref('recipe_list').push().key
 
-    let steps = recipe.steps
-    const promises = steps.map((step, index) => {
-      if(step.video) {
-        return postVideo(key, index, step.video)
+    let instructions = recipe.instructions
+    const promises = instructions.map((instruction, index) => {
+      if(instruction.video) {
+        return postVideo(key, index, instruction.video)
       }
     })
-    if(recipe.photo) {
-      promises.push(postImage(key, 0, recipe.photo.path))
+    if(recipe.introduction.photo) {
+      promises.push(postImage(key, 0, recipe.introduction.photo))
     }
 
     Promise.all(promises).then(() => {
@@ -149,28 +148,42 @@ export const UPDATE_REQUEST = 'UPDATE_REQUEST'
 export const UPDATE_SUCCESS = 'UPDATE_SUCCESS'
 export const UPDATE_FAILURE = 'UPDATE_FAILURE'
 
-export function updatePost(post) {
+export function update(recipe) {
   return function(dispatch, getState) {
     dispatch(requestUpdate())
-    const photos = post.photos.filter((photo) => {return photo.path !== undefined})
-    post = {
-      uid: getState().auth.user.uid,
-      date: new Date().toJSON().slice(0,10),
-      ...post,
-      photos: photos.length
+
+    recipe = {
+      uid: getState().auth.uid,
+      profilePic: getState().auth.photoURL,
+      author: getState().auth.displayName,
+      email: getState().auth.email,
+      ...recipe
     }
 
-    firebase.database().ref('post_list/' + post.key).update(post).then(() => {
-      const promises = photos.map((photo, index) => {
-        return updateImage(photo.key, index, photo.path)
-      })
-      Promise.all(promises).then(() => {
+    const key = recipe.key
+    let instructions = recipe.instructions
+    const promises = instructions.map((instruction, index) => {
+      if(instruction.video && !instruction.video.includes('http')) {
+        return postVideo(key, index, instruction.video)
+      }
+    })
+    if(recipe.introduction.photo && !recipe.introduction.photo.includes('http')) {
+      promises.push(postImage(key, 0, recipe.introduction.photo))
+    }
+
+    Promise.all(promises).then(() => {
+      firebase.database().ref('recipe_list/' + key).update(recipe).then(()=>{
         dispatch(updateSuccess())
+        Alert.alert('Recipe updated sucessfully')
       })
     }, error => {
       dispatch(updateFailure(error))
       console.log(error)
-      Alert.alert('Something went wrong while trying to publish')
+      Alert.alert('Something went wrong while trying to update')
+    })
+    .catch((error) => {
+      console.log(error)
+      Alert.alert('Something went wrong while trying to update')
     })
   }
 }
@@ -207,30 +220,32 @@ export function getMyRecipes() {
         dispatch(searchOwnSuccess([]))
       } else {
         var items = []
-        let steps = []
+        let instructions = []
         let promises = []
         snapshot.forEach((child) => {
           const key = child.key
-          if (child.val().steps) {
-            promises = child.val().steps.map((step, i) => {
-              steps[i] = child.val().steps[i]
-              if(step.video) {
+          if (child.val().instructions) {
+            promises = child.val().instructions.map((instruction, i) => {
+              instructions[i] = child.val().instructions[i]
+              if(instruction.video) {
                 return loadVideo(key, i).then((res) => {
-                  steps[i].video = res.path
+                  instructions[i].video = res.path
                 })
               }
             })
           }
 
           Promise.all(promises).then(() => {
-            if(child.val().photo.path) {
+            if(child.val().introduction.photo) {
               readImage(key, 0).then((result) => {
-                items.push(Object.assign({}, child.val(), {photo: result}, {key: child.key}, {steps}))
+                let introduction = child.val().introduction
+                introduction.photo = result.path
+                items.push(Object.assign({}, child.val(), {introduction}, {key: child.key}, {instructions}))
                 items.reverse()
                 dispatch(searchOwnSuccess(items))
               })
             } else {
-              items.push(Object.assign({}, child.val(), {key: child.key}, {steps}))
+              items.push(Object.assign({}, child.val(), {key: child.key}, {instructions}))
               items.reverse()
               dispatch(searchOwnSuccess(items))
             }

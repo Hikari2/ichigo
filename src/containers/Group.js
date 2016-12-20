@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { logout } from '../actions'
 
-class GroupPage extends Component {
+class Group extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -56,4 +56,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(GroupPage)
+)(Group)

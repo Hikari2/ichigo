@@ -15,7 +15,7 @@ import {createGroup} from '../actions/groups'
 import { Actions } from 'react-native-router-flux'
 import {getFriendList} from '../actions/user'
 
-class CreateGroupPage extends Component {
+class CreateGroup extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -49,7 +49,7 @@ class CreateGroupPage extends Component {
           <Icon.Button
             name='arrow-right'
             backgroundColor='transparent'
-            underlayColor='#236B8E'
+            underlayColor='rgb(189,189,189)'
             style={styles.optionButton}
             iconStyle={styles.optionIcon}
             onPress={() => {
@@ -60,7 +60,7 @@ class CreateGroupPage extends Component {
                   list: this.state.list,
                   title: value.title
                 })
-                Actions.listGroup()
+                Actions.myGroups()
               }
             }}>
             <Text size={16} style={styles.optionText} >
@@ -107,7 +107,7 @@ class CreateGroupPage extends Component {
   }
 }
 
-CreateGroupPage.propTypes = {
+CreateGroup.propTypes = {
   isSearching: React.PropTypes.bool,
   friends: React.PropTypes.array,
   onLoad: React.PropTypes.func,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   markedItem: {
     borderWidth: 2,
-    borderColor: '#3299CC',
+    borderColor: 'rgb(80, 200, 180)',
     backgroundColor: '#ffffff'
   },
   optionButton: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.1,
     borderRadius: 1,
     padding: 20,
-    backgroundColor: '#00BFFF'
+    backgroundColor: 'rgb(80, 200, 180)'
   },
   optionIcon: {
     color: '#FFFFFF'
@@ -218,4 +218,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CreateGroupPage)
+)(CreateGroup)

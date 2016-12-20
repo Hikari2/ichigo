@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { loginFaceBook, checkLogin } from '../actions/auth'
 
-class LoginPage extends Component {
+class Login extends Component {
   constructor(props) {
     super(props)
   }
@@ -38,7 +38,7 @@ class LoginPage extends Component {
   }
 }
 
-LoginPage.propTypes = {
+Login.propTypes = {
   faceBookLogin: React.PropTypes.func,
   onLoad: React.PropTypes.func
 }
@@ -92,4 +92,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginPage)
+)(Login)

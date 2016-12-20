@@ -30,15 +30,18 @@ class SideMenu extends Component {
         <View style={styles.optionsContainer}>
           <ScrollView>
             <Icon.Button
-              name='home'
+              name='folder-o'
               backgroundColor='transparent'
               underlayColor='#B6B6B4'
               borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
-              onPress={() => { drawer.close(); Actions.home(); }}>
+              onPress={() => {
+                drawer.close()
+                Actions.myRecipes()
+              }}>
               <Text size={16} style={styles.optionText}>
-                Home
+                My Recipes
               </Text>
             </Icon.Button>
             <Icon.Button
@@ -48,7 +51,7 @@ class SideMenu extends Component {
               borderRadius={0}
               style={styles.optionButton}
               iconStyle={styles.optionIcon}
-              onPress={() => { drawer.close(); Actions.listGroup(); }}>
+              onPress={() => { drawer.close(); Actions.myGroups(); }}>
               <Text size={16} style={styles.optionText}>
                 My groups
               </Text>
@@ -140,9 +143,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   optionButton: {
-    borderWidth: 0.1,
+    borderBottomWidth: 0.1,
     padding: 20,
-    borderColor: '#2C3539'
+    borderColor: 'red'
   },
   optionIcon: {
     color: '#2B3856'

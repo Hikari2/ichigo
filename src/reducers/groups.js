@@ -13,6 +13,11 @@ const groups = (
     myGroups: []
   }, action) => {
   switch (action.type) {
+    case FIND_GROUPS_REQUEST: {
+      return Object.assign({}, state, {
+        isSearching: true
+      })
+    }
     case FIND_GROUPS_SUCCESS: {
       return Object.assign({}, state, {
         isSearching: false,
