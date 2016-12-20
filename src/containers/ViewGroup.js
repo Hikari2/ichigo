@@ -14,6 +14,7 @@ import Ingredients from '../components/Ingredients'
 import Instructions from '../components/Instructions'
 import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Add from '../components/Add'
 
 const {height, width} = Dimensions.get('window')
 
@@ -64,6 +65,7 @@ class ViewGroup extends Component {
         {
           this.props.group.shared ? this.renderRecipes() : <View/>
         }
+        <Add width={width}/>
         </ScrollView>
       </View>
     )
